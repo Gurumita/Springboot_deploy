@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class ApplicationControllerTest {
+public class ApplicationServiceTest {
 
     @Mock
     private ApplicationService applicationService;
@@ -21,7 +21,7 @@ public class ApplicationControllerTest {
     @InjectMocks
     private ApplicationController applicationController;
 
-    public ApplicationControllerTest() {
+    public ApplicationServiceTest() {
         MockitoAnnotations.openMocks(this);
     }
 

@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class CategoryControllerTest {
+public class CategoryServiceTest {
 
     @Mock
     private CategoryService categoryService;
@@ -23,7 +23,7 @@ public class CategoryControllerTest {
     @InjectMocks
     private CategoryController categoryController;
 
-    public CategoryControllerTest() {
+    public CategoryServiceTest() {
         MockitoAnnotations.openMocks(this);
     }
 

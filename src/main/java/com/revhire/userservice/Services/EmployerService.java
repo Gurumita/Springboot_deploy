@@ -179,6 +179,10 @@ public class EmployerService {
         Employer existingEmployer = employerRepository.findById(id)
                 .orElseThrow(() -> new EmployerNotFoundException("Employer not found with id: " + id));
 
+        if (employerDetails.getEmployerName() != null) {
+            existingEmployer.setEmployerName(employerDetails.getEmployerName());
+        }
+
         // Update fields if they are not null
         if (employerDetails.getFirstName() != null) {
             existingEmployer.setFirstName(employerDetails.getFirstName());
@@ -198,6 +202,12 @@ public class EmployerService {
         if (employerDetails.getPassword() != null) {
             existingEmployer.setPassword(PasswordUtils.hashPassword(employerDetails.getPassword()));
         }
+
+        // Ensure createdAt stays unchanged
+        employerDetails.setCreatedAt(existingEmployer.getCreatedAt());
+
+        // Update modifiedAt to the current time
+        existingEmployer.setModifiedAt(Instant.now());
 
         // Save updated employer details
         return employerRepository.save(existingEmployer);

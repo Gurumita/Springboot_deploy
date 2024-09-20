@@ -5,6 +5,7 @@ import com.revhire.userservice.dto.AuthRequest;
 import com.revhire.userservice.enums.Role;
 import com.revhire.userservice.exceptions.InvalidCredentialsException;
 import com.revhire.userservice.exceptions.InvalidEmailException;
+import com.revhire.userservice.exceptions.UserNotFoundException;
 import com.revhire.userservice.models.User;
 import com.revhire.userservice.repository.UserRepository;
 import com.revhire.userservice.utilities.EmailService;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.revhire.userservice.exceptions.NotFoundException; // Add this import
 
 import jakarta.mail.MessagingException;
 
@@ -168,7 +168,7 @@ public class UserServiceTest {
 
 
     @Test
-    void fetchByEmail_ShouldReturnUser_WhenUserExists() throws NotFoundException {
+    void fetchByEmail_ShouldReturnUser_WhenUserExists() throws UserNotFoundException {
         User user = new User();
         user.setEmail("test@example.com");
 
@@ -184,7 +184,7 @@ public class UserServiceTest {
     void fetchByEmail_ShouldThrowException_WhenUserDoesNotExist() {
         when(userRepository.findByEmail(any(String.class))).thenReturn(null);
 
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> {
             userService.fetchByEmail("test@example.com");
         });
 

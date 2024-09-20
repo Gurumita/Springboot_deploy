@@ -1,11 +1,11 @@
 package com.revhire.userservice.Services;
 
 import com.revhire.userservice.dto.AuthRequest;
+import com.revhire.userservice.exceptions.UserNotFoundException;
 import com.revhire.userservice.repository.UserRepository;
 import com.revhire.userservice.enums.Role;
 import com.revhire.userservice.exceptions.InvalidCredentialsException;
 import com.revhire.userservice.exceptions.InvalidEmailException;
-import com.revhire.userservice.exceptions.NotFoundException;
 import com.revhire.userservice.models.User;
 import com.revhire.userservice.utilities.EmailService;
 import com.revhire.userservice.utilities.ModelUpdater;
@@ -193,10 +193,10 @@ public class UserService {
         }
     }
 
-    public User fetchByEmail(String email) throws NotFoundException {
+    public User fetchByEmail(String email) throws UserNotFoundException {
         User dbUser = userRepository.findByEmail(email);
         if (dbUser == null) {
-            throw new NotFoundException("User with email: " + email + " not found");
+            throw new UserNotFoundException("User with email: " + email + " not found");
         }
         return dbUser;
     }
@@ -204,4 +204,14 @@ public class UserService {
     public User getUserById(Long userId) {
         return userRepository.findById(userId).orElse(null);
     }
+
+    public User updateUser(Long userId, User updatedUser) throws UserNotFoundException {
+        User dbUser = userRepository.findById(userId).orElseThrow(() ->
+                new UserNotFoundException("User with ID " + userId + " not found"));
+
+        User  updateUser = modelUpdater.updateFields(dbUser, updatedUser);
+
+        return userRepository.save(updateUser);
+    }
+
 }

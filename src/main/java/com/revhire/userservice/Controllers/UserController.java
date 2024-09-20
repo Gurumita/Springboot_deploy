@@ -1,6 +1,7 @@
 package com.revhire.userservice.Controllers;
 import com.revhire.userservice.Services.UserService;
 import com.revhire.userservice.exceptions.InvalidCredentialsException;
+import com.revhire.userservice.exceptions.UserNotFoundException;
 import com.revhire.userservice.models.User;
 import com.revhire.userservice.utilities.BaseResponse;
 import org.slf4j.Logger;
@@ -142,6 +143,26 @@ public class UserController {
             return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<BaseResponse<User>> updateUser(@PathVariable Long userId, @RequestBody User updatedUser) {
+        BaseResponse<User> baseResponse = new BaseResponse<>();
+        try {
+            User updatedDbUser = userService.updateUser(userId, updatedUser);
+            baseResponse.setStatus(HttpStatus.OK.value());
+            baseResponse.setMessages("User updated successfully");
+            baseResponse.setData(updatedDbUser);
+            return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+        } catch (UserNotFoundException e) {
+            baseResponse.setStatus(HttpStatus.NOT_FOUND.value());
+            baseResponse.setMessages(e.getMessage());
+            return new ResponseEntity<>(baseResponse, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            baseResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            baseResponse.setMessages("Error updating user: " + e.getMessage());
+            return new ResponseEntity<>(baseResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -22,6 +22,7 @@ public class EmailService {
         messageHelper.setTo(to);
         messageHelper.setSubject(subject);
         messageHelper.setText(body);
+        messageHelper.setFrom("g.gurumita@gmail.com");
 
         mailSender.send(message);
     }

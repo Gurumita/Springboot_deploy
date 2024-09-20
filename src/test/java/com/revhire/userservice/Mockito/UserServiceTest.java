@@ -1,6 +1,7 @@
 package com.revhire.userservice.Mockito;
 
 import com.revhire.userservice.Services.UserService;
+import com.revhire.userservice.dto.AuthRequest;
 import com.revhire.userservice.enums.Role;
 import com.revhire.userservice.exceptions.InvalidCredentialsException;
 import com.revhire.userservice.exceptions.InvalidEmailException;
@@ -64,25 +65,24 @@ public class UserServiceTest {
         verify(userRepository).save(user);
         verify(emailService).sendEmail(eq("test@example.com"), any(String.class), any(String.class));
     }
-
-
-
-
-
     @Test
     void loginUser_ShouldReturnUser_WhenCredentialsAreValid() throws InvalidCredentialsException {
-        User user = new User();
-        user.setEmail("test@example.com");
-        user.setPassword("hashedPassword");
 
-        when(userRepository.findByEmail(any(String.class))).thenReturn(user);
-        when(passwordEncrypter.hashPassword(any(String.class))).thenReturn("hashedPassword");
+        AuthRequest authRequest = new AuthRequest();
+        authRequest.setEmail("test@example.com");
+        authRequest.setPassword("plainPassword");
 
-        User result = userService.loginUser("test@example.com", "password");
-
+        User dbUser = new User();
+        dbUser.setEmail("test@example.com");
+        dbUser.setPassword("hashedPassword");
+        when(userRepository.findByEmail(authRequest.getEmail())).thenReturn(dbUser);
+        when(passwordEncrypter.hashPassword(authRequest.getPassword())).thenReturn("hashedPassword");
+        User result = userService.loginUser(authRequest);
         assertNotNull(result);
         assertEquals("test@example.com", result.getEmail());
+        assertNull(result.getPassword());
     }
+
 
 
 

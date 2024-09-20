@@ -1,5 +1,6 @@
 package com.revhire.userservice.Services;
 
+import com.revhire.userservice.dto.AuthRequest;
 import com.revhire.userservice.exceptions.EmployerNotFoundException;
 import com.revhire.userservice.exceptions.InvalidCredentialsException;
 import com.revhire.userservice.exceptions.InvalidEmailException;
@@ -61,13 +62,13 @@ public class EmployerService {
         emailService.sendEmail(email, subject, body);
     }
 
-    public Employer loginUser(String email, String password) throws InvalidCredentialsException {
-        Employer dbUser = employerRepository.findByEmail(email);
+    public Employer loginUser(AuthRequest authRequest) throws InvalidCredentialsException {
+        Employer dbUser = employerRepository.findByEmail(authRequest.getEmail());
         if (dbUser == null) {
             throw new InvalidCredentialsException("Invalid email");
         }
 
-        String hashedPassword = passwordEncrypter.hashPassword(password);
+        String hashedPassword = passwordEncrypter.hashPassword(authRequest.getPassword());
         if (hashedPassword.equals(dbUser.getPassword())) {
             dbUser.setPassword(null);  // Hide password
             return dbUser;

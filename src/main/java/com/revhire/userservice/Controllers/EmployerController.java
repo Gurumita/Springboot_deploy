@@ -1,6 +1,7 @@
 package com.revhire.userservice.Controllers;
 
 import com.revhire.userservice.Services.EmployerService;
+import com.revhire.userservice.dto.AuthRequest;
 import com.revhire.userservice.exceptions.EmployerNotFoundException;
 import com.revhire.userservice.exceptions.InvalidCredentialsException;
 import com.revhire.userservice.models.Employer;
@@ -42,14 +43,14 @@ public class EmployerController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<Employer>> login(@RequestBody Map<String, String> body) {
-        String email = body.get("email");
-        String password = body.get("password");
+    public ResponseEntity<BaseResponse<Employer>> login(@RequestBody AuthRequest authRequest) {
+//        String email = body.get("email");
+//        String password = body.get("password");
 
         BaseResponse<Employer> baseResponse = new BaseResponse<>();
 
         try {
-            Employer user = employerService.loginUser(email, password);
+            Employer user = employerService.loginUser(authRequest);
             baseResponse.setStatus(HttpStatus.OK.value());
             baseResponse.setMessages("Login Successful");
             baseResponse.setData(user);

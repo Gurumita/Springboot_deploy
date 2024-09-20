@@ -4,6 +4,7 @@ package com.revhire.userservice.utilities;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,6 +16,8 @@ public class EmailService {
     RandomCredentialsGenerator generator;
     @Autowired
     JavaMailSender mailSender;
+    @Value("${spring.mail.username}")
+    String senderEmail;
 
     public void sendEmail(String to, String subject, String body) throws MessagingException {
         MimeMessage message=mailSender.createMimeMessage();
@@ -22,7 +25,7 @@ public class EmailService {
         messageHelper.setTo(to);
         messageHelper.setSubject(subject);
         messageHelper.setText(body);
-        messageHelper.setFrom("g.gurumita@gmail.com");
+        messageHelper.setFrom(senderEmail);
 
         mailSender.send(message);
     }
